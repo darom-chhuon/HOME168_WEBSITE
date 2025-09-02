@@ -18,6 +18,11 @@ export default function ProductDetail() {
     storage: string;
   }
 
+  interface ImageDetailObject {
+    img: string;
+    storage: string;
+  }
+
   interface Detail {
     id: number;
     name: string;
@@ -31,6 +36,7 @@ export default function ProductDetail() {
     images: ImageObject[];
     images_full_url: string[];
     choice_options: ChoiceOption[];
+    item_details  : ImageDetailObject[];
   }
 
   const [details, setDetailProduct] = useState<Detail | null>(null);
@@ -39,6 +45,8 @@ export default function ProductDetail() {
   const [loading, setLoading] = useState(true);
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
   const [filteredImages, setFilteredImages] = useState<ImageObject[]>([]);
+  const [itemDetailsImages,setItemDetailsImages] = useState<string[]>([]);
+
   const [showCopiedMessage, setShowCopiedMessage] = useState(false);
   const { slug } = useParams();
   const router = useRouter();
@@ -74,6 +82,15 @@ export default function ProductDetail() {
       // Initialize filtered images
       if (response.data.images) {
         setFilteredImages(response.data.images);
+      }
+
+      // Initialize Item Details
+      if(response.data.item_details && Array.isArray(response.data.item_details)){
+        const baseUrl = process.env.product_dic;
+        const detailImages = response.data.item_details.map((imgObj: ImageDetailObject) => 
+          `${baseUrl}/${imgObj.img}`
+        );
+        setItemDetailsImages(detailImages);
       }
     } catch (error) {
       console.log("Error", error);
@@ -181,10 +198,15 @@ export default function ProductDetail() {
     window.open(`https://www.messenger.com/t/${messengerProfileId}?text=${message}`, '_blank');
   };
 
+  // HandleMessage Mini-app
+  const handleClickMiniApp = () => {
+    window.open(`https://t.me/Home168Miniapp_bot?startapp=${details?.id}`);
+  }
   // Get all gallery images including video thumbnail and product images
   const youtubeId = details?.video_url ? extractYoutubeId(details.video_url) : null;
   
   const galleryImages = [];
+
   if (youtubeId) {
     galleryImages.push("youtube_thumbnail");
   }
@@ -198,12 +220,14 @@ export default function ProductDetail() {
     });
   }
 
+
   // If you also want to use images_full_url as a fallback
   if (galleryImages.length === 0 && details?.images_full_url && Array.isArray(details.images_full_url)) {
     details.images_full_url.forEach(img => {
       galleryImages.push(img);
     });
   }
+
 
   const discountedPrice = details?.discount && details?.discount_type
   ? details.discount_type === 'percent'
@@ -322,19 +346,22 @@ export default function ProductDetail() {
 
             {/* Product Info */}
             <div className="space-y-6">
+            <div>
+            <p className="text-3xl font-bold text-gray-900">{details?.name}</p>
+              </div>
               <div className="flex items-center space-x-4">
-                <p className="text-3xl font-bold text-gray-900">${discountedPrice}</p>
-                {details?.discount && (
+              <p className="text-3xl font-bold text-gray-900">${discountedPrice}</p>
+                {details && details.discount > 0 && (
   <p className="text-xl text-gray-500 line-through">${details.price}</p>
-)}
-{details?.discount && (
-  <span className="bg-red-100 text-red-800 text-sm font-medium px-2 py-1 rounded">
-    {details.discount_type === 'percent' 
-      ? `Save ${details.discount}%` 
-      : `Save $${details.discount}`
-    }
-  </span>
-)}
+            )}
+            {details?.discount > 0 && (
+              <span className="bg-red-100 text-red-800 text-sm font-medium px-2 py-1 rounded">
+                {details.discount_type === 'percent' 
+                  ? `Save ${details.discount}%` 
+                  : `Save $${details.discount}`
+                }
+              </span>
+            )}
               </div>
 
               <div>
@@ -383,14 +410,14 @@ export default function ProductDetail() {
               </div>
 
               <div className="flex items-center space-x-4">
-                <button className="flex-1 bg-blue-600 text-white py-3 px-6 rounded-md font-medium hover:bg-blue-700 flex items-center justify-center">
-                  Telegram
+                <button onClick={handleClickMiniApp} className="flex-1 bg-blue-600 text-white py-3 px-6 rounded-md font-medium hover:bg-blue-700 flex items-center justify-center">
+                🛒ចុចទិញទីនេះ 👈
                 </button>
                 <button 
                   className="flex-1 bg-blue-600 text-white py-3 px-6 rounded-md font-medium hover:bg-blue-700 flex items-center justify-center"
                   onClick={handleMessengerClick}
                 >
-                  Messenger
+                  💬 Send message                 		 
                 </button>
               </div>
 
@@ -403,7 +430,7 @@ export default function ProductDetail() {
         </div>
 
         {/* Additional Info Section */}
-        <div className="mt-8 bg-white rounded-lg shadow-md overflow-hidden">
+        {/* <div className="mt-8 bg-white rounded-lg shadow-md overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-200">
             <h2 className="text-lg font-medium text-gray-900">Product Details</h2>
           </div>
@@ -433,14 +460,20 @@ export default function ProductDetail() {
               </p>
             </div>
           </div>
-        </div>
-        <div  className="justify-center">
-          <img src="/detail-product.png" alt="" />
-          <img src="/detail-product.png" alt="" />
-          <img src="/detail-product.png" alt="" />
-          <img src="/detail-product.png" alt="" />
-        </div>
+        </div> */}
+        <br />
+
+         {/* Initialize Item Details */}
+         {itemDetailsImages.length > 0 && (
+        <div>
+          {itemDetailsImages.map((img,index) => (
+                <div key={index} className="flex flex-col justify-center items-center gap-4">
+                    <img className="object-contain w-160" src={img} alt={img} />
+              </div>
+          ))};
+       </div>
+         )}
       </div>
-    </div>
+       </div>
   );
 }

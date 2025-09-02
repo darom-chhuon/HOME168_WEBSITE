@@ -18,7 +18,7 @@ export default function Productrecommend() {
   const [error, setError] = useState<string | null>(null);
 
   const fetchProduct = async () => {
-    const baseUrl = "http://127.0.0.1:8000" || process.env.API_ENDPOINT;
+    const baseUrl = process.env.API_ENDPOINT;
     const apiPrefix = process.env.apiPreFix;
     try {
       setLoading(true);

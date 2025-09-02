@@ -3,6 +3,7 @@ import axios from "axios";
 import React from "react";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import ReactPixel from 'react-facebook-pixel';
 export default function ProductListing() {
   interface Product {
     id: number;
@@ -17,6 +18,20 @@ export default function ProductListing() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Facebook Meta Pixel
+
+  // const handleButtonClick = () => {
+  //   if (typeof window !== 'undefined' && window.fbq) {
+  //     window.fbq('track', 'AddToCart', {
+  //       content_name: 'Product X',
+  //       value: 29.99,
+  //       currency: 'USD',
+  //     });
+  //     console.log('AddToCart event tracked via fbq');
+  //   } else {
+  //     console.error('Facebook Pixel (fbq) is not initialized');
+  //   }
+  // };
   const fetchProduct = async () => {
     const baseUrl   = process.env.API_ENDPOINT;
     const apiPrefix = process.env.apiPreFix;
@@ -24,7 +39,7 @@ export default function ProductListing() {
     try {
       setLoading(true);
       const response = await axios.get(
-        `${baseUrl}/${apiPrefix}/items/latest?store_id=${storeId}&category_id=All&limit=20&offset=1`,
+        `${baseUrl}/${apiPrefix}/items/latest?store_id=${storeId}&category_id=All&limit=100&offset=1`,
         {
           headers: {
             moduleId: 1,
@@ -126,6 +141,8 @@ export default function ProductListing() {
   return (
     <div className="min-h-screen w-full bg-gray-50 py-12">
       <div className="container mx-auto px-4">
+        
+      {/* <button onClick={handleButtonClick} className="text-red">Add to Cart</button> */}
         <h1 className="text-3xl font-bold text-center mb-12 text-gray-800">ម៉ូតថ្មីប្រចាំថ្ងៃ</h1>
         <div className="grid w-full grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 px-2 py-2">
           {products.map((product) => {
@@ -151,6 +168,7 @@ export default function ProductListing() {
                         : `$${product.discount} OFF`}
                     </span>
                   )}
+                 
                   {/* <button className="absolute top-4 right-4 bg-white rounded-full p-2 shadow-md hover:bg-gray-100 transition duration-200">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />

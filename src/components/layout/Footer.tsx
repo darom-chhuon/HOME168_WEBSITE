@@ -33,22 +33,22 @@ export default function Footer() {
           <div className="mt-4 md:mt-0">
             <div className="flex space-x-4">
               <a 
-                href="https://twitter.com" 
+                href="#" 
                 className="text-gray-300 hover:text-white transition-colors duration-300"
               >
-                Twitter
+              <img className="w-5" src="/social/telegram.png" alt="No+Telegram" />
               </a>
               <a 
-                href="https://facebook.com" 
+                href="#" 
                 className="text-gray-300 hover:text-white transition-colors duration-300"
               >
-                Facebook
+                <img className="w-5" src="/social/facebook.png" alt="No+Facebook" />
               </a>
               <a 
-                href="https://instagram.com" 
+                href="#" 
                 className="text-gray-300 hover:text-white transition-colors duration-300"
               >
-                Instagram
+               <img className="w-5" src="/social/chat.png" alt="NO+Messager" />
               </a>
             </div>
           </div>

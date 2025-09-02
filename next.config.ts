@@ -1,6 +1,6 @@
 import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
-  /* config options here */
+  /* config options here http://127.0.0.1:3000/ */
   env:{
     API_ENDPOINT : process.env.API_ENDPOINT,
     apiPreFix    : process.env.API_PREFIX,
@@ -10,6 +10,9 @@ const nextConfig: NextConfig = {
     facebookId  : process.env.FACEBOOK_PIXEL_ID,
     category_dic : process.env.CATEGORY_ID,
     messageProfileId: process.env.messageProfileId,
+  },
+  server: {
+    host: 'http://127.0.0.1:3000', // Listen on all network interfaces
   },
 };
 
